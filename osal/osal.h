@@ -28,6 +28,7 @@ extern "C"
 
 #include "osal_defs.h"
 #include <stdint.h>
+#include <time.h>
 
 /* General types */
 typedef uint8_t             boolean;
@@ -44,6 +45,8 @@ typedef uint64_t            uint64;
 typedef float               float32;
 typedef double              float64;
 
+
+
 typedef struct
 {
     uint32 sec;     /*< Seconds elapsed since the Epoch (Jan 1, 1970) */
@@ -55,13 +58,17 @@ typedef struct osal_timer
     ec_timet stop_time;
 } osal_timert;
 
+
 void osal_timer_start(osal_timert * self, uint32 timeout_us);
 boolean osal_timer_is_expired(osal_timert * self);
 int osal_usleep(uint32 usec);
 ec_timet osal_current_time(void);
-void osal_time_diff(ec_timet *start, ec_timet *end, ec_timet *diff);
-int osal_thread_create(void *thandle, int stacksize, void *func, void *param);
-int osal_thread_create_rt(void *thandle, int stacksize, void *func, void *param);
+//void osal_time_diff(ec_timet *start, ec_timet *end, ec_timet *diff);
+void osal_time_diff(ec_timet *start, ec_timet *end, int *dt_sec, int *dt_usec);
+OSAL_THREAD_FUNC osal_thread_create(void *thandle, int stacksize, void *(*func) (void *), void *param);
+OSAL_THREAD_FUNC_RT osal_thread_create_rt(void *thandle, int stacksize, void *(*func) (void *), void *param);
+void Init_RTC();
+int test_osal_time_diff();
 
 #ifdef __cplusplus
 }

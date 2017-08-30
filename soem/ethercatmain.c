@@ -982,7 +982,6 @@ int ecx_mbxreceive(ecx_contextt *context, uint16 slave, ec_mbxbuft *mbx, int tim
    ec_mbxheadert *mbxh;
    ec_emcyt *EMp;
    ec_mbxerrort *MBXEp;
-
    configadr = context->slavelist[slave].configadr;
    mbxl = context->slavelist[slave].mbx_rl;
    if ((mbxl > 0) && (mbxl <= EC_MAXMBX))
@@ -1002,7 +1001,6 @@ int ecx_mbxreceive(ecx_contextt *context, uint16 slave, ec_mbxbuft *mbx, int tim
          }
       }
       while (((wkc <= 0) || ((SMstat & 0x08) == 0)) && (osal_timer_is_expired(&timer) == FALSE));
-
       if ((wkc > 0) && ((SMstat & 0x08) > 0)) /* read mailbox available ? */
       {
          mbxro = context->slavelist[slave].mbx_ro;
@@ -1870,9 +1868,12 @@ int ecx_receive_processdata_group(ecx_contextt *context, uint8 group, int timeou
       /* get next index */
       pos = ecx_pullindex(context);
    }
+   
 
    ecx_clearindex(context);
-
+   
+   if(wkc2<EC_NOFRAME) return wkc2;
+   
    /* if no frames has arrived */
    if (valid_wkc == 0)
    {

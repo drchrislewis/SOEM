@@ -89,7 +89,7 @@ PACKED_END
  * @param[in]     hook       = Pointer to hook function.
  * @return 1
  */
-int ecx_FOEdefinehook(ecx_contextt *context, void *hook)
+int ecx_FOEdefinehook(ecx_contextt *context, int (*hook) (uint16_t, int, int))
 {
   context->FOEhook = hook;
   return 1;
@@ -391,7 +391,8 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
 }
 
 #ifdef EC_VER1
-int ec_FOEdefinehook(void *hook)
+int ec_FOEdefinehook( int (*hook) (uint16_t, int, int))
+//int ec_FOEdefinehook(void *hook)
 {
    return ecx_FOEdefinehook(&ecx_context, hook);
 }

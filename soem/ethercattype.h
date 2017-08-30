@@ -75,7 +75,8 @@ extern "C"
 /** return value unknown frame received */
 #define EC_OTHERFRAME      -2
 /** maximum EtherCAT frame length in bytes */
-#define EC_MAXECATFRAME    1518
+//#define EC_MAXECATFRAME    1518
+#define EC_MAXECATFRAME    1100 // reduced to get it to link
 /** maximum EtherCAT LRW frame length in bytes */
 /* MTU - Ethernet header - length - datagram header - WCK - FCS */
 #define EC_MAXLRWDATA      (EC_MAXECATFRAME - 14 - 2 - 10 - 2 - 4)
@@ -86,7 +87,7 @@ extern "C"
 /** datagram type EtherCAT */
 #define EC_ECATTYPE        0x1000
 /** number of frame buffers per channel (tx, rx1 rx2) */
-#define EC_MAXBUF          16
+#define EC_MAXBUF          5
 /** timeout value in us for tx frame to return to rx */
 #define EC_TIMEOUTRET      2000
 /** timeout value in us for safe data transfer, max. triple retry */

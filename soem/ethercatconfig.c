@@ -68,7 +68,11 @@
 #endif
 
 /* define maximum number of concurrent threads in mapping */
-#define MAX_MAPT 8
+#ifdef SERIAL_MAPPING
+#define MAX_MAPT 1
+#else
+#define MAX_MAPT 1
+#endif
 
 typedef struct
 {
@@ -172,6 +176,7 @@ int ecx_detect_slaves(ecx_contextt *context)
    b = EC_STATE_INIT | EC_STATE_ACK;
    ecx_BWR(context->port, 0x0000, ECT_REG_ALCTL, sizeof(b), &b, EC_TIMEOUTRET3);       /* Reset all slaves to Init */
    /* netX100 should now be happy */
+   ecx_BWR(context->port, 0x0000, ECT_REG_ALCTL, sizeof(b), &b, EC_TIMEOUTRET3);       /* Reset all slaves to Init */
    ecx_BWR(context->port, 0x0000, ECT_REG_ALCTL, sizeof(b), &b, EC_TIMEOUTRET3);       /* Reset all slaves to Init */
    wkc = ecx_BRD(context->port, 0x0000, ECT_REG_TYPE, sizeof(w), &w, EC_TIMEOUTSAFE);  /* detect number of slaves */
    if (wkc > 0)
@@ -825,6 +830,7 @@ OSAL_THREAD_FUNC ecx_mapper_thread(void *param)
    maptp = param;
    ecx_map_coe_soe(maptp->context, maptp->slave);
    maptp->running = 0;
+   return((void *)1);// CLL added here to avoid a warning about not returning anything
 }
 
 static int ecx_find_mapt(void)
@@ -911,8 +917,11 @@ int ecx_config_map_group(ecx_contextt *context, void *pIOmap, uint8 group)
                ecx_mapt[thrn].context = context;
                ecx_mapt[thrn].slave = slave;
                ecx_mapt[thrn].running = 1;
-               osal_thread_create(&(ecx_threadh[thrn]), 128000,
-                  &ecx_mapper_thread, &(ecx_mapt[thrn]));
+               osal_thread_create(
+                                  &(ecx_threadh[thrn]),
+                                  128000,
+                                  &ecx_mapper_thread,
+                                  &(ecx_mapt[thrn]));
             }
          }
       }

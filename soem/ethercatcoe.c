@@ -165,7 +165,6 @@ int ecx_SDOread(ecx_contextt *context, uint16 slave, uint16 index, uint8 subinde
    ec_mbxbuft MbxIn, MbxOut;
    uint8 cnt, toggle;
    boolean NotLast;
-
    ec_clearmbx(&MbxIn);
    /* Empty slave out mailbox if something is in. Timout set to 0 */
    wkc = ecx_mbxreceive(context, slave, (ec_mbxbuft *)&MbxIn, 0);
@@ -285,7 +284,7 @@ int ecx_SDOread(ecx_contextt *context, uint16 slave, uint16 index, uint8 subinde
                                        /* substract unused bytes from frame */
                                        Framedatasize = Framedatasize - ((aSDOp->Command & 0x0e) >> 1);
                                     /* copy to parameter buffer */
-                                    memcpy(hp, &(aSDOp->Index), Framedatasize);
+                                       memcpy(hp, &(aSDOp->Index), Framedatasize);
                                  }
                                  else /* segments follow */
                                  {
@@ -517,7 +516,7 @@ int ecx_SDOwrite(ecx_contextt *context, uint16 Slave, uint16 Index, uint8 SubInd
                   SDOp->CANOpen = htoes(0x000 + (ECT_COES_SDOREQ << 12)); /* number 9bits service upper 4 bits (SDO request) */
                   SDOp->Command = SDOp->Command + toggle; /* add toggle bit to command byte */
                   /* copy parameter data to mailbox */
-                  memcpy(&SDOp->Index, hp, framedatasize);
+                 memcpy(&SDOp->Index, hp, framedatasize);
                   /* update parameter buffer pointer */
                   hp += framedatasize;
                   psize -= framedatasize;
